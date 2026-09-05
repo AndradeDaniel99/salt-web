@@ -5,17 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   BadgeCheck,
-  MapPin,
   Search,
   Sparkles,
   X,
 } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
 import {
   assetPath,
-  formatMoney,
   fundingProgress,
   saltCatalog,
   type Campaign,
@@ -45,7 +42,6 @@ declare global {
 
 export function SaltApp() {
   const [query, setQuery] = useState('');
-  const [supportedCampaigns, setSupportedCampaigns] = useState<string[]>([]);
   const searchResults = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('pt-BR');
 
@@ -92,21 +88,6 @@ export function SaltApp() {
   const monthlyCampaigns = searchResults.campaigns.filter(
     (campaign) => campaign.funding.type === 'monthly',
   );
-
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      try {
-        const saved = JSON.parse(
-          window.localStorage.getItem('salt-supported-campaigns') ?? '[]',
-        ) as string[];
-        setSupportedCampaigns(saved);
-      } catch {
-        setSupportedCampaigns([]);
-      }
-    });
-
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
 
   useEffect(() => {
     const context = document.modelContext;
@@ -193,9 +174,23 @@ export function SaltApp() {
             execute(input) {
               const campaignId = parseCampaignId(input);
               const amount = parseAmount(input);
-              setSupportedCampaigns((current) =>
-                current.includes(campaignId) ? current : [...current, campaignId],
-              );
+              let supportedCampaigns: string[] = [];
+
+              try {
+                supportedCampaigns = JSON.parse(
+                  window.localStorage.getItem('salt-supported-campaigns') ?? '[]',
+                ) as string[];
+              } catch {
+                supportedCampaigns = [];
+              }
+
+              if (!supportedCampaigns.includes(campaignId)) {
+                window.localStorage.setItem(
+                  'salt-supported-campaigns',
+                  JSON.stringify([...supportedCampaigns, campaignId]),
+                );
+              }
+
               return { campaignId, amount, status: 'simulated_support_registered' };
             },
           },
@@ -255,20 +250,14 @@ export function SaltApp() {
             title="Campanhas pontuais"
             subtitle="Metas com prazo, prestação de contas e atualizações de campo."
           >
-            <CampaignGrid
-              campaigns={featuredOneTime}
-              supportedCampaigns={supportedCampaigns}
-            />
+            <CampaignGrid campaigns={featuredOneTime} />
           </CatalogSection>
 
           <CatalogSection
             title="Apoio mensal"
             subtitle="Sustento recorrente para presença, cuidado e continuidade."
           >
-            <CampaignGrid
-              campaigns={monthlyCampaigns}
-              supportedCampaigns={supportedCampaigns}
-            />
+            <CampaignGrid campaigns={monthlyCampaigns} />
           </CatalogSection>
 
           <CatalogSection title="Organizações">
@@ -305,13 +294,7 @@ function CatalogSection({
   );
 }
 
-function CampaignGrid({
-  campaigns,
-  supportedCampaigns,
-}: {
-  campaigns: Campaign[];
-  supportedCampaigns: string[];
-}) {
+function CampaignGrid({ campaigns }: { campaigns: Campaign[] }) {
   if (campaigns.length === 0) {
     return (
       <div className="rounded-lg border border-dashed bg-card p-6 text-sm text-muted-foreground">
@@ -326,7 +309,6 @@ function CampaignGrid({
         const organization = saltCatalog.organizations.find(
           (item) => item.id === campaign.organizationID,
         );
-        const hasSupport = supportedCampaigns.includes(campaign.id);
 
         return (
           <Link
@@ -346,44 +328,26 @@ function CampaignGrid({
               />
             </div>
             <div className="px-2 pb-2 pt-5 sm:px-3 sm:pb-3">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground sm:text-base">
-                <MapPin className="size-4 shrink-0" strokeWidth={1.8} aria-hidden="true" />
-                <span>{campaign.location}</span>
-              </div>
-              <h3 className="mt-4 text-2xl font-semibold leading-tight tracking-tight">
+              <h3 className="text-2xl font-semibold leading-tight tracking-tight">
                 {campaign.title}
               </h3>
-              <p className="mt-3 line-clamp-2 text-base leading-7 text-muted-foreground">
-                {campaign.shortDescription}
+              <p className="mt-3 text-base text-muted-foreground">
+                {fundingProgress(campaign.funding)}% da meta alcançada
               </p>
-              <Progress
-                value={fundingProgress(campaign.funding)}
-                className="mt-5 [&_[data-slot=progress-track]]:h-1.5 [&_[data-slot=progress-track]]:bg-white/15"
-              />
-              <p className="mt-3 text-base font-semibold leading-6">
-                {campaign.funding.type === 'monthly'
-                  ? `${formatMoney(campaign.funding.committed)} de ${formatMoney(campaign.funding.goal)} por mês`
-                  : `${formatMoney(campaign.funding.raised)} de ${formatMoney(campaign.funding.goal)}`}
-              </p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {campaign.funding.type === 'monthly'
-                  ? `${campaign.funding.supportersCount} mantenedores`
-                  : `${fundingProgress(campaign.funding)}% da meta alcançada`}
-              </p>
-              <div className="mt-5 flex items-center gap-2 text-sm font-medium text-primary sm:text-base">
-                <BadgeCheck className="size-5 shrink-0" aria-hidden="true" />
-                <span>
-                  {organization?.verification === 'verifiedDemo'
-                    ? 'Organização verificada'
-                    : 'Informações fornecidas'}
+              <div className="mt-4 flex min-w-0 items-center gap-2 text-sm text-muted-foreground sm:text-base">
+                {organization?.verification === 'verifiedDemo' ? (
+                  <>
+                    <BadgeCheck
+                      className="size-5 shrink-0 text-primary"
+                      aria-hidden="true"
+                    />
+                    <span className="sr-only">Organização verificada:</span>
+                  </>
+                ) : null}
+                <span className="truncate">
+                  {organization?.name ?? 'Organização parceira'}
                 </span>
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {organization?.name ?? 'Organização parceira'}
-              </p>
-              {hasSupport ? (
-                <p className="mt-4 text-sm font-medium text-primary">Apoio ativo</p>
-              ) : null}
             </div>
           </Link>
         );
