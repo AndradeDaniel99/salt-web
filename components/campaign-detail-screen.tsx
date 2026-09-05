@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  ArrowLeft,
   CheckCircle2,
   Heart,
   MapPin,
@@ -15,6 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { AppBackButton } from '@/components/app-back-button';
 import { cn } from '@/lib/utils';
 import {
   assetPath,
@@ -60,13 +60,7 @@ export function CampaignDetailScreen({
     <main className="min-h-screen bg-background pb-8 text-foreground">
       <header className="sticky top-0 z-20 border-b bg-background/94 backdrop-blur-md">
         <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-4 sm:px-6 lg:px-10">
-          <Link
-            href="/"
-            className="inline-flex min-h-11 items-center gap-2 rounded-lg pr-3 text-sm font-medium transition hover:text-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-          >
-            <ArrowLeft className="size-5" aria-hidden="true" />
-            Voltar às campanhas
-          </Link>
+          <AppBackButton fallbackHref="/" label="Voltar" />
           <Link href="/" className="flex items-center gap-2" aria-label="Salt Web">
             <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground shadow-sm">
               <Sparkles className="size-4" aria-hidden="true" />
@@ -174,7 +168,11 @@ export function CampaignDetailScreen({
             </section>
 
             {missionary ? (
-              <section className="rounded-lg border bg-card p-5 shadow-sm">
+              <Link
+                href={`/missionarios/${missionary.id}`}
+                aria-label={`Ver perfil de ${missionary.displayName}`}
+                className="group block rounded-3xl border bg-card p-5 shadow-sm transition hover:border-primary/45 hover:bg-muted/55 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
+              >
                 <div className="flex items-center gap-4">
                   <Image
                     src={assetPath(missionary.portrait)}
@@ -185,7 +183,7 @@ export function CampaignDetailScreen({
                   />
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                      Em campo
+                      Em campo · Ver perfil
                     </p>
                     <h2 className="mt-1 text-xl font-semibold">{missionary.displayName}</h2>
                     <p className="text-sm text-muted-foreground">
@@ -196,7 +194,7 @@ export function CampaignDetailScreen({
                 <p className="mt-4 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
                   {missionary.currentMission}
                 </p>
-              </section>
+              </Link>
             ) : null}
 
             {organization ? (

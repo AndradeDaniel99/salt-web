@@ -1,10 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, BadgeCheck, MapPin } from 'lucide-react';
+import { BadgeCheck, MapPin } from 'lucide-react';
 
-import { buttonVariants } from '@/components/ui/button';
+import { AppBackButton } from '@/components/app-back-button';
 import { assetPath, type Campaign, type Missionary, type Organization } from '@/lib/catalog';
-import { cn } from '@/lib/utils';
 
 export function MissionaryDetailScreen({
   missionary,
@@ -18,16 +17,11 @@ export function MissionaryDetailScreen({
   return (
     <main className="min-h-screen bg-background pb-12 text-foreground">
       <div className="mx-auto w-full max-w-[960px] px-4 pt-5 sm:px-8 sm:pt-8">
-        <Link
-          href="/"
-          aria-label="Voltar ao catálogo"
-          className={cn(
-            buttonVariants({ variant: 'outline', size: 'icon-lg' }),
-            'size-12 rounded-full border-white/10 bg-card text-primary hover:bg-muted',
-          )}
-        >
-          <ArrowLeft className="size-5" aria-hidden="true" />
-        </Link>
+        <AppBackButton
+          fallbackHref={campaigns[0] ? `/campanhas/${campaigns[0].id}` : '/'}
+          label="Voltar"
+          iconOnly
+        />
 
         <div className="relative mt-8 aspect-[4/3] overflow-hidden rounded-[1.75rem] bg-muted sm:aspect-[16/10]">
           <Image
