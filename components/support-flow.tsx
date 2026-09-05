@@ -171,7 +171,7 @@ export function SupportFlow({
                     className={cn(
                       'h-14 rounded-2xl border-primary text-base font-semibold text-primary hover:bg-primary/10 sm:text-lg',
                       amount === suggestedAmount &&
-                        'bg-primary text-primary-foreground hover:bg-primary/90',
+                        'border-[#8be0ad] bg-[#8be0ad] text-[#092015] shadow-[0_8px_24px_rgb(139_224_173/0.2)] hover:bg-[#9be8b9]',
                     )}
                   >
                     {formatContribution(suggestedAmount)}
