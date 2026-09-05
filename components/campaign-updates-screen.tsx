@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import {
   BadgeCheck,
   CalendarDays,
@@ -60,13 +59,13 @@ export function CampaignUpdatesScreen({
             className="justify-self-start"
           />
           <p className="text-sm font-semibold">Atualizações</p>
-          <Link
+          <a
             href="/"
             className="grid size-9 place-items-center justify-self-end rounded-lg bg-primary text-primary-foreground"
             aria-label="Ir para a página inicial"
           >
             <Sparkles className="size-4" aria-hidden="true" />
-          </Link>
+          </a>
         </div>
       </header>
 

@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { BadgeCheck, MapPin } from 'lucide-react';
 
 import { AppBackButton } from '@/components/app-back-button';
@@ -96,7 +95,7 @@ export function MissionaryDetailScreen({
             </h2>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {campaigns.map((campaign) => (
-                <Link
+                <a
                   key={campaign.id}
                   href={`/campanhas/${campaign.id}`}
                   className="rounded-2xl bg-card p-5 font-semibold transition hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
@@ -105,7 +104,7 @@ export function MissionaryDetailScreen({
                   <span className="mt-2 block text-sm font-normal text-muted-foreground">
                     {campaign.shortDescription}
                   </span>
-                </Link>
+                </a>
               ))}
             </div>
           </section>

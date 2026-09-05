@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import {
   BadgeCheck,
   Search,
@@ -211,14 +210,14 @@ export function SaltApp() {
         <section className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
           <header className="mb-8">
             <div className="flex items-center justify-between gap-4">
-              <Link href="/" className="flex items-center gap-3" aria-label="Salt Web">
+              <a href="/" className="flex items-center gap-3" aria-label="Salt Web">
                 <span className="grid size-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-[0_8px_30px_rgb(103_230_157/0.14)]">
                   <Sparkles className="size-5" aria-hidden="true" />
                 </span>
                 <span className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
                   Salt
                 </span>
-              </Link>
+              </a>
               <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Descobrir</h1>
               <span className="w-[85px] text-right text-xs text-muted-foreground">Demonstração</span>
             </div>
@@ -312,7 +311,7 @@ function CampaignGrid({ campaigns }: { campaigns: Campaign[] }) {
         );
 
         return (
-          <Link
+          <a
             key={campaign.id}
             href={`/campanhas/${campaign.id}`}
             aria-label={`Ver detalhes de ${campaign.title}`}
@@ -355,7 +354,7 @@ function CampaignGrid({ campaigns }: { campaigns: Campaign[] }) {
                 </span>
               </div>
             </div>
-          </Link>
+          </a>
         );
       })}
     </div>

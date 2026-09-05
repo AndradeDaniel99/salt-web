@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import {
   ArrowLeft,
   ArrowRight,
@@ -290,7 +289,7 @@ export function SupportFlow({
               acompanhamento da missão.
             </p>
 
-            <Link
+            <a
               href={missionHref}
               className={cn(
                 buttonVariants({ size: 'lg' }),
@@ -299,7 +298,7 @@ export function SupportFlow({
             >
               Acompanhar missão
               <ArrowRight className="size-5" aria-hidden="true" />
-            </Link>
+            </a>
           </section>
         ) : null}
       </div>

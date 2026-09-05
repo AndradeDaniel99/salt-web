@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 import { CampaignUpdatesScreen } from '@/components/campaign-updates-screen';
 import { saltCatalog } from '@/lib/catalog';
@@ -38,12 +37,12 @@ export default async function CampaignUpdatesPage({ params }: CampaignUpdatesPag
           <p className="mt-3 leading-7 text-muted-foreground">
             Esta campanha não está disponível no catálogo de demonstração.
           </p>
-          <Link
+          <a
             href="/"
             className="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             Voltar às campanhas
-          </Link>
+          </a>
         </div>
       </main>
     );
