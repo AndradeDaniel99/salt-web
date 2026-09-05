@@ -44,32 +44,17 @@ function HeaderControl({
   label,
   children,
   onClick,
-  href,
 }: {
   label: string;
   children: React.ReactNode;
-  onClick?: () => void;
-  href?: string;
+  onClick: () => void;
 }) {
-  const className = cn(
-    buttonVariants({ variant: 'outline', size: 'icon-lg' }),
-    'size-12 rounded-full border-white/10 bg-card text-primary hover:bg-muted',
-  );
-
-  if (href) {
-    return (
-      <Link href={href} className={className} aria-label={label}>
-        {children}
-      </Link>
-    );
-  }
-
   return (
     <Button
       type="button"
       variant="outline"
       size="icon-lg"
-      className={className}
+      className="size-12 rounded-full border-white/10 bg-card text-primary hover:bg-muted"
       onClick={onClick}
       aria-label={label}
     >
@@ -105,6 +90,15 @@ export function SupportFlow({
     setAmount(Number.isFinite(parsed) ? parsed : 0);
   }
 
+  function closeSupportFlow() {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    window.location.assign(`/campanhas/${campaign.id}`);
+  }
+
   function confirmSupport() {
     try {
       const current = JSON.parse(
@@ -138,7 +132,7 @@ export function SupportFlow({
             <p className="text-center text-sm font-semibold text-muted-foreground">Seu apoio</p>
             <HeaderControl
               label="Fechar fluxo de apoio"
-              href={`/campanhas/${campaign.id}`}
+              onClick={closeSupportFlow}
             >
               <X className="size-5" aria-hidden="true" />
             </HeaderControl>
