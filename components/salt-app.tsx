@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
+import { Progress } from '@/components/ui/progress';
 import {
   assetPath,
   fundingProgress,
@@ -315,9 +316,9 @@ function CampaignGrid({ campaigns }: { campaigns: Campaign[] }) {
             key={campaign.id}
             href={`/campanhas/${campaign.id}`}
             aria-label={`Ver detalhes de ${campaign.title}`}
-            className="group overflow-hidden rounded-[1.75rem] bg-card p-3 text-left shadow-[0_18px_48px_rgb(0_0_0/0.24)] transition hover:-translate-y-1 hover:shadow-[0_22px_58px_rgb(0_0_0/0.34)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60 sm:p-4"
+            className="group block rounded-[1.25rem] text-left transition hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
           >
-            <div className="aspect-[16/9] overflow-hidden rounded-[1.2rem] bg-muted">
+            <div className="aspect-[16/9] overflow-hidden rounded-[1.25rem] bg-muted">
               <Image
                 src={assetPath(campaign.cover)}
                 alt={campaign.cover.alternativeText}
@@ -327,13 +328,18 @@ function CampaignGrid({ campaigns }: { campaigns: Campaign[] }) {
                 className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.035]"
               />
             </div>
-            <div className="px-2 pb-2 pt-5 sm:px-3 sm:pb-3">
+            <div className="pt-5">
               <h3 className="text-2xl font-semibold leading-tight tracking-tight">
                 {campaign.title}
               </h3>
               <p className="mt-3 text-base text-muted-foreground">
                 {fundingProgress(campaign.funding)}% da meta alcançada
               </p>
+              <Progress
+                value={fundingProgress(campaign.funding)}
+                aria-label={`${fundingProgress(campaign.funding)}% da meta alcançada`}
+                className="mt-3 [&_[data-slot=progress-track]]:h-1.5 [&_[data-slot=progress-track]]:bg-white/15"
+              />
               <div className="mt-4 flex min-w-0 items-center gap-2 text-sm text-muted-foreground sm:text-base">
                 {organization?.verification === 'verifiedDemo' ? (
                   <>
