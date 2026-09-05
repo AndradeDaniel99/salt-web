@@ -4,31 +4,23 @@ import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  ArrowRight,
-  CheckCircle2,
-  Heart,
+  BadgeCheck,
   MapPin,
   Search,
-  ShieldCheck,
   Sparkles,
   X,
 } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import {
   assetPath,
-  fundingCurrentLabel,
-  fundingGoalLabel,
+  formatMoney,
   fundingProgress,
   saltCatalog,
   type Campaign,
   type Organization,
 } from '@/lib/catalog';
-
-const suggestedAmounts = [50, 100, 250, 500];
 
 declare global {
   interface Document {
@@ -54,13 +46,6 @@ declare global {
 export function SaltApp() {
   const [query, setQuery] = useState('');
   const [supportedCampaigns, setSupportedCampaigns] = useState<string[]>([]);
-  const [selectedAmount, setSelectedAmount] = useState(100);
-
-  const selectedCampaign = saltCatalog.campaigns[0];
-
-  const selectedOrganization = saltCatalog.organizations.find(
-    (organization) => organization.id === selectedCampaign.organizationID,
-  );
   const searchResults = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('pt-BR');
 
@@ -107,8 +92,6 @@ export function SaltApp() {
   const monthlyCampaigns = searchResults.campaigns.filter(
     (campaign) => campaign.funding.type === 'monthly',
   );
-  const hasActiveSupport = supportedCampaigns.includes(selectedCampaign.id);
-
   useEffect(() => {
     const context = document.modelContext;
 
@@ -194,7 +177,6 @@ export function SaltApp() {
             execute(input) {
               const campaignId = parseCampaignId(input);
               const amount = parseAmount(input);
-              setSelectedAmount(amount);
               setSupportedCampaigns((current) =>
                 current.includes(campaignId) ? current : [...current, campaignId],
               );
@@ -211,42 +193,33 @@ export function SaltApp() {
     return () => lifecycle.abort();
   }, []);
 
-  function supportSelectedCampaign() {
-    setSupportedCampaigns((current) =>
-      current.includes(selectedCampaign.id)
-        ? current
-        : [...current, selectedCampaign.id],
-    );
-  }
-
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto min-h-screen w-full max-w-[1120px]">
-        <section className="px-4 py-5 sm:px-6 lg:px-10 lg:py-8">
-          <header className="mb-7 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <Link href="/" className="flex items-center gap-3" aria-label="Salt Web">
-              <span className="grid size-10 place-items-center rounded-lg bg-primary text-primary-foreground shadow-sm">
-                <Sparkles className="size-5" aria-hidden="true" />
-              </span>
-              <span>
-                <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+        <section className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+          <header className="mb-8">
+            <div className="flex items-center justify-between gap-4">
+              <Link href="/" className="flex items-center gap-3" aria-label="Salt Web">
+                <span className="grid size-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-[0_8px_30px_rgb(103_230_157/0.14)]">
+                  <Sparkles className="size-5" aria-hidden="true" />
+                </span>
+                <span className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
                   Salt
                 </span>
-                <span className="block text-sm text-muted-foreground">
-                  Protótipo web
-                </span>
-              </span>
-            </Link>
-            <div className="relative w-full sm:max-w-sm">
+              </Link>
+              <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Descobrir</h1>
+              <span className="w-[85px] text-right text-xs text-muted-foreground">Demonstração</span>
+            </div>
+            <div className="relative mt-6 w-full">
               <Search
-                className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground"
                 aria-hidden="true"
               />
               <Input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                className="h-11 rounded-lg bg-card pl-9 pr-9 text-base shadow-sm"
-                placeholder="Buscar campanhas, famílias ou organizações"
+                className="h-14 rounded-2xl border-white/10 bg-card pl-12 pr-11 text-base shadow-none placeholder:text-muted-foreground/80 focus-visible:border-primary/60"
+                placeholder="Campanhas, pessoas ou organizações"
                 aria-label="Buscar no catálogo"
               />
               {query ? (
@@ -261,87 +234,6 @@ export function SaltApp() {
               ) : null}
             </div>
           </header>
-
-          <div className="mb-8 grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,0.85fr)]">
-            <article className="overflow-hidden rounded-lg border bg-card shadow-sm">
-              <div className="relative min-h-[360px]">
-                <Image
-                  src={assetPath(selectedCampaign.cover)}
-                  alt={selectedCampaign.cover.alternativeText}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 60vw, 100vw"
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(14_49_48/0.88),rgb(14_49_48/0.42),rgb(14_49_48/0.08))]" />
-                <div className="relative flex min-h-[360px] max-w-2xl flex-col justify-end p-5 text-white sm:p-8">
-                  <Badge className="mb-4 w-fit border-white/20 bg-white/15 text-white">
-                    Demonstração sem cobrança real
-                  </Badge>
-                  <h1 className="max-w-xl text-4xl font-semibold leading-tight sm:text-5xl">
-                    {selectedCampaign.title}
-                  </h1>
-                  <p className="mt-4 max-w-lg text-lg leading-7 text-white/84">
-                    {selectedCampaign.shortDescription}
-                  </p>
-                  <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-white/86">
-                    <span className="inline-flex items-center gap-1.5">
-                      <MapPin className="size-4" aria-hidden="true" />
-                      {selectedCampaign.location}
-                    </span>
-                    {selectedOrganization ? (
-                      <span className="inline-flex items-center gap-1.5">
-                        <ShieldCheck className="size-4" aria-hidden="true" />
-                        {selectedOrganization.name}
-                      </span>
-                    ) : null}
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <aside className="rounded-lg border bg-card p-5 shadow-sm">
-              <CampaignFunding campaign={selectedCampaign} />
-              <div className="mt-6 grid grid-cols-2 gap-2">
-                {suggestedAmounts.map((amount) => (
-                  <button
-                    key={amount}
-                    type="button"
-                    onClick={() => setSelectedAmount(amount)}
-                    className={`rounded-lg border px-3 py-3 text-left text-sm transition ${
-                      selectedAmount === amount
-                        ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-border bg-background hover:border-primary/60'
-                    }`}
-                  >
-                    <span className="block text-xs opacity-75">Valor</span>
-                    <span className="text-lg font-semibold">R$ {amount}</span>
-                  </button>
-                ))}
-              </div>
-              <Button
-                size="lg"
-                className="mt-4 h-11 w-full bg-primary text-base hover:bg-primary/90"
-                onClick={supportSelectedCampaign}
-              >
-                <Heart className="size-4 fill-current" aria-hidden="true" />
-                {selectedCampaign.funding.type === 'monthly'
-                  ? 'Apoiar mensalmente'
-                  : 'Apoiar esta campanha'}
-              </Button>
-              {hasActiveSupport ? (
-                <p className="mt-4 flex items-center gap-2 text-sm font-medium text-primary">
-                  <CheckCircle2 className="size-4" aria-hidden="true" />
-                  Apoio simulado registrado neste navegador.
-                </p>
-              ) : (
-                <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                  Esta versão repete a regra do app iOS: nenhum pagamento é
-                  processado e nenhum dado pessoal é enviado.
-                </p>
-              )}
-            </aside>
-          </div>
 
           <CatalogSection
             title="Campanhas pontuais"
@@ -387,9 +279,9 @@ function CatalogSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="mb-9">
-      <div className="mb-4 flex flex-col gap-1">
-        <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
+    <section className="mb-12">
+      <div className="mb-5 flex flex-col gap-1.5">
+        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h2>
         {subtitle ? <p className="text-base text-muted-foreground">{subtitle}</p> : null}
       </div>
       {children}
@@ -413,7 +305,7 @@ function CampaignGrid({
   }
 
   return (
-    <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
+    <div className="grid gap-6 md:grid-cols-2">
       {campaigns.map((campaign) => {
         const organization = saltCatalog.organizations.find(
           (item) => item.id === campaign.organizationID,
@@ -425,41 +317,57 @@ function CampaignGrid({
             key={campaign.id}
             href={`/campanhas/${campaign.id}`}
             aria-label={`Ver detalhes de ${campaign.title}`}
-            className="group overflow-hidden rounded-lg border border-border bg-card text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-md focus-visible:border-ring focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="group overflow-hidden rounded-[1.75rem] bg-card p-3 text-left shadow-[0_18px_48px_rgb(0_0_0/0.24)] transition hover:-translate-y-1 hover:shadow-[0_22px_58px_rgb(0_0_0/0.34)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60 sm:p-4"
           >
-            <div className="aspect-[16/9] overflow-hidden bg-muted">
+            <div className="aspect-[16/9] overflow-hidden rounded-[1.2rem] bg-muted">
               <Image
                 src={assetPath(campaign.cover)}
                 alt={campaign.cover.alternativeText}
                 width={640}
                 height={360}
                 sizes="(min-width: 1536px) 28vw, (min-width: 768px) 45vw, 100vw"
-                className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.035]"
               />
             </div>
-            <div className="p-4">
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                <Badge variant={campaign.funding.type === 'monthly' ? 'secondary' : 'outline'}>
-                  {campaign.funding.type === 'monthly' ? 'Mensal' : 'Pontual'}
-                </Badge>
-                {hasSupport ? (
-                  <Badge className="bg-primary/10 text-primary">Apoio ativo</Badge>
-                ) : null}
+            <div className="px-2 pb-2 pt-5 sm:px-3 sm:pb-3">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground sm:text-base">
+                <MapPin className="size-4 shrink-0" strokeWidth={1.8} aria-hidden="true" />
+                <span>{campaign.location}</span>
               </div>
-              <h3 className="text-lg font-semibold leading-snug">{campaign.title}</h3>
-              <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
+              <h3 className="mt-4 text-2xl font-semibold leading-tight tracking-tight">
+                {campaign.title}
+              </h3>
+              <p className="mt-3 line-clamp-2 text-base leading-7 text-muted-foreground">
                 {campaign.shortDescription}
               </p>
-              <div className="mt-4 flex items-center justify-between gap-3 text-sm text-muted-foreground">
-                <span>{organization?.name ?? 'Organização parceira'}</span>
-                <span className="inline-flex shrink-0 items-center gap-1 font-medium text-primary">
-                  Ver campanha
-                  <ArrowRight
-                    className="size-4 transition-transform group-hover:translate-x-0.5"
-                    aria-hidden="true"
-                  />
+              <Progress
+                value={fundingProgress(campaign.funding)}
+                className="mt-5 [&_[data-slot=progress-track]]:h-1.5 [&_[data-slot=progress-track]]:bg-white/15"
+              />
+              <p className="mt-3 text-base font-semibold leading-6">
+                {campaign.funding.type === 'monthly'
+                  ? `${formatMoney(campaign.funding.committed)} de ${formatMoney(campaign.funding.goal)} por mês`
+                  : `${formatMoney(campaign.funding.raised)} de ${formatMoney(campaign.funding.goal)}`}
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {campaign.funding.type === 'monthly'
+                  ? `${campaign.funding.supportersCount} mantenedores`
+                  : `${fundingProgress(campaign.funding)}% da meta alcançada`}
+              </p>
+              <div className="mt-5 flex items-center gap-2 text-sm font-medium text-primary sm:text-base">
+                <BadgeCheck className="size-5 shrink-0" aria-hidden="true" />
+                <span>
+                  {organization?.verification === 'verifiedDemo'
+                    ? 'Organização verificada'
+                    : 'Informações fornecidas'}
                 </span>
               </div>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {organization?.name ?? 'Organização parceira'}
+              </p>
+              {hasSupport ? (
+                <p className="mt-4 text-sm font-medium text-primary">Apoio ativo</p>
+              ) : null}
             </div>
           </Link>
         );
@@ -468,34 +376,9 @@ function CampaignGrid({
   );
 }
 
-function CampaignFunding({ campaign }: { campaign: Campaign }) {
-  const progress = fundingProgress(campaign.funding);
-
-  return (
-    <div>
-      <div className="mb-3 flex items-start justify-between gap-3">
-        <div>
-          <p className="text-sm font-medium text-muted-foreground">
-            {fundingCurrentLabel(campaign.funding)}
-          </p>
-          <p className="mt-1 text-2xl font-semibold">{progress}%</p>
-        </div>
-        <Badge variant="secondary">{campaign.funding.type === 'monthly' ? 'Recorrente' : 'Meta'}</Badge>
-      </div>
-      <Progress value={progress} className="[&_[data-slot=progress-track]]:h-2" />
-      <p className="mt-3 text-sm text-muted-foreground">
-        {fundingGoalLabel(campaign.funding)}
-        {campaign.funding.type === 'monthly'
-          ? ` com ${campaign.funding.supportersCount} apoiadores.`
-          : '.'}
-      </p>
-    </div>
-  );
-}
-
 function OrganizationCard({ organization }: { organization: Organization }) {
   return (
-    <article className="rounded-lg border bg-card p-4 shadow-sm">
+    <article className="rounded-3xl bg-card p-5 shadow-[0_18px_48px_rgb(0_0_0/0.2)]">
       <div className="mb-4 flex items-center gap-3">
         <Image
           src={assetPath(organization.logo)}
