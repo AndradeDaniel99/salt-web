@@ -92,6 +92,22 @@ export function SaltApp() {
   const monthlyCampaigns = searchResults.campaigns.filter(
     (campaign) => campaign.funding.type === 'monthly',
   );
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        const saved = JSON.parse(
+          window.localStorage.getItem('salt-supported-campaigns') ?? '[]',
+        ) as string[];
+        setSupportedCampaigns(saved);
+      } catch {
+        setSupportedCampaigns([]);
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
   useEffect(() => {
     const context = document.modelContext;
 

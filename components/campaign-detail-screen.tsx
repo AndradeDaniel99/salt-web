@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -13,8 +13,9 @@ import {
 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 import {
   assetPath,
   fundingCurrentLabel,
@@ -25,8 +26,6 @@ import {
   type Missionary,
   type Organization,
 } from '@/lib/catalog';
-
-const suggestedAmounts = [50, 100, 250, 500];
 
 export function CampaignDetailScreen({
   campaign,
@@ -39,9 +38,23 @@ export function CampaignDetailScreen({
   missionary?: Missionary;
   updates: CampaignUpdate[];
 }) {
-  const [selectedAmount, setSelectedAmount] = useState(100);
   const [hasActiveSupport, setHasActiveSupport] = useState(false);
   const progress = fundingProgress(campaign.funding);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        const supportedCampaigns = JSON.parse(
+          window.localStorage.getItem('salt-supported-campaigns') ?? '[]',
+        ) as string[];
+        setHasActiveSupport(supportedCampaigns.includes(campaign.id));
+      } catch {
+        setHasActiveSupport(false);
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [campaign.id]);
 
   return (
     <main className="min-h-screen bg-background pb-8 text-foreground">
@@ -128,46 +141,26 @@ export function CampaignDetailScreen({
                 : '.'}
             </p>
 
-            <div className="mt-6 grid grid-cols-2 gap-2">
-              {suggestedAmounts.map((amount) => (
-                <button
-                  key={amount}
-                  type="button"
-                  onClick={() => setSelectedAmount(amount)}
-                  aria-pressed={selectedAmount === amount}
-                  className={`min-h-14 rounded-lg border px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 ${
-                    selectedAmount === amount
-                      ? 'border-primary bg-primary text-primary-foreground'
-                      : 'border-border bg-background hover:border-primary/60'
-                  }`}
-                >
-                  <span className="block text-xs opacity-75">Valor</span>
-                  <span className="text-lg font-semibold">R$ {amount}</span>
-                </button>
-              ))}
-            </div>
-            <Button
-              size="lg"
-              className="mt-4 h-12 w-full bg-primary text-base hover:bg-primary/90"
-              onClick={() => setHasActiveSupport(true)}
+            <Link
+              href={`/campanhas/${campaign.id}/apoio`}
+              className={cn(
+                buttonVariants({ size: 'lg' }),
+                'mt-6 h-14 w-full rounded-2xl bg-primary px-5 text-base text-primary-foreground hover:bg-primary/90',
+              )}
             >
               <Heart className="size-4 fill-current" aria-hidden="true" />
-              {campaign.funding.type === 'monthly'
-                ? 'Apoiar mensalmente'
-                : 'Apoiar esta campanha'}
-            </Button>
-            <div aria-live="polite">
-              {hasActiveSupport ? (
-                <p className="mt-4 flex items-start gap-2 text-sm font-medium text-primary">
-                  <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                  Apoio simulado de R$ {selectedAmount} registrado.
-                </p>
-              ) : (
-                <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                  Nenhum pagamento é processado e nenhum dado pessoal é enviado.
-                </p>
-              )}
-            </div>
+              {campaign.funding.type === 'monthly' ? 'Apoiar mensalmente' : 'Apoiar campanha'}
+            </Link>
+            {hasActiveSupport ? (
+              <p className="mt-4 flex items-start gap-2 text-sm font-medium text-primary">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                Você já apoia esta campanha neste dispositivo.
+              </p>
+            ) : (
+              <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                Simulação sem cobrança ou envio de dados pessoais.
+              </p>
+            )}
           </aside>
 
           <div className="space-y-7 lg:col-start-1 lg:row-start-1">
