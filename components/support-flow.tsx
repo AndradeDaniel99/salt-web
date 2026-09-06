@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import {
   ArrowLeft,
   ArrowRight,
@@ -44,32 +43,17 @@ function HeaderControl({
   label,
   children,
   onClick,
-  href,
 }: {
   label: string;
   children: React.ReactNode;
-  onClick?: () => void;
-  href?: string;
+  onClick: () => void;
 }) {
-  const className = cn(
-    buttonVariants({ variant: 'outline', size: 'icon-lg' }),
-    'size-12 rounded-full border-white/10 bg-card text-primary hover:bg-muted',
-  );
-
-  if (href) {
-    return (
-      <Link href={href} className={className} aria-label={label}>
-        {children}
-      </Link>
-    );
-  }
-
   return (
     <Button
       type="button"
       variant="outline"
       size="icon-lg"
-      className={className}
+      className="size-12 rounded-full border-white/10 bg-card text-primary hover:bg-muted"
       onClick={onClick}
       aria-label={label}
     >
@@ -105,6 +89,15 @@ export function SupportFlow({
     setAmount(Number.isFinite(parsed) ? parsed : 0);
   }
 
+  function closeSupportFlow() {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    window.location.assign(`/campanhas/${campaign.id}`);
+  }
+
   function confirmSupport() {
     try {
       const current = JSON.parse(
@@ -138,7 +131,7 @@ export function SupportFlow({
             <p className="text-center text-sm font-semibold text-muted-foreground">Seu apoio</p>
             <HeaderControl
               label="Fechar fluxo de apoio"
-              href={`/campanhas/${campaign.id}`}
+              onClick={closeSupportFlow}
             >
               <X className="size-5" aria-hidden="true" />
             </HeaderControl>
@@ -171,7 +164,7 @@ export function SupportFlow({
                     className={cn(
                       'h-14 rounded-2xl border-primary text-base font-semibold text-primary hover:bg-primary/10 sm:text-lg',
                       amount === suggestedAmount &&
-                        'bg-primary text-primary-foreground hover:bg-primary/90',
+                        'border-[#f1fff6] bg-[#f1fff6] text-[#07130c] shadow-[0_8px_28px_rgb(241_255_246/0.18)] hover:bg-[#e8fff0] dark:border-[#f1fff6] dark:bg-[#f1fff6] dark:text-[#07130c] dark:hover:bg-[#e8fff0]',
                     )}
                   >
                     {formatContribution(suggestedAmount)}
@@ -296,7 +289,7 @@ export function SupportFlow({
               acompanhamento da missão.
             </p>
 
-            <Link
+            <a
               href={missionHref}
               className={cn(
                 buttonVariants({ size: 'lg' }),
@@ -305,7 +298,7 @@ export function SupportFlow({
             >
               Acompanhar missão
               <ArrowRight className="size-5" aria-hidden="true" />
-            </Link>
+            </a>
           </section>
         ) : null}
       </div>

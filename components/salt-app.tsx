@@ -2,10 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import {
   BadgeCheck,
-  MapPin,
   Search,
   Sparkles,
   X,
@@ -15,7 +13,6 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import {
   assetPath,
-  formatMoney,
   fundingProgress,
   saltCatalog,
   type Campaign,
@@ -45,7 +42,6 @@ declare global {
 
 export function SaltApp() {
   const [query, setQuery] = useState('');
-  const [supportedCampaigns, setSupportedCampaigns] = useState<string[]>([]);
   const searchResults = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('pt-BR');
 
@@ -92,21 +88,6 @@ export function SaltApp() {
   const monthlyCampaigns = searchResults.campaigns.filter(
     (campaign) => campaign.funding.type === 'monthly',
   );
-
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      try {
-        const saved = JSON.parse(
-          window.localStorage.getItem('salt-supported-campaigns') ?? '[]',
-        ) as string[];
-        setSupportedCampaigns(saved);
-      } catch {
-        setSupportedCampaigns([]);
-      }
-    });
-
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
 
   useEffect(() => {
     const context = document.modelContext;
@@ -193,9 +174,23 @@ export function SaltApp() {
             execute(input) {
               const campaignId = parseCampaignId(input);
               const amount = parseAmount(input);
-              setSupportedCampaigns((current) =>
-                current.includes(campaignId) ? current : [...current, campaignId],
-              );
+              let supportedCampaigns: string[] = [];
+
+              try {
+                supportedCampaigns = JSON.parse(
+                  window.localStorage.getItem('salt-supported-campaigns') ?? '[]',
+                ) as string[];
+              } catch {
+                supportedCampaigns = [];
+              }
+
+              if (!supportedCampaigns.includes(campaignId)) {
+                window.localStorage.setItem(
+                  'salt-supported-campaigns',
+                  JSON.stringify([...supportedCampaigns, campaignId]),
+                );
+              }
+
               return { campaignId, amount, status: 'simulated_support_registered' };
             },
           },
@@ -215,14 +210,14 @@ export function SaltApp() {
         <section className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
           <header className="mb-8">
             <div className="flex items-center justify-between gap-4">
-              <Link href="/" className="flex items-center gap-3" aria-label="Salt Web">
+              <a href="/" className="flex items-center gap-3" aria-label="Salt Web">
                 <span className="grid size-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-[0_8px_30px_rgb(103_230_157/0.14)]">
                   <Sparkles className="size-5" aria-hidden="true" />
                 </span>
                 <span className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
                   Salt
                 </span>
-              </Link>
+              </a>
               <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Descobrir</h1>
               <span className="w-[85px] text-right text-xs text-muted-foreground">Demonstração</span>
             </div>
@@ -255,20 +250,14 @@ export function SaltApp() {
             title="Campanhas pontuais"
             subtitle="Metas com prazo, prestação de contas e atualizações de campo."
           >
-            <CampaignGrid
-              campaigns={featuredOneTime}
-              supportedCampaigns={supportedCampaigns}
-            />
+            <CampaignGrid campaigns={featuredOneTime} />
           </CatalogSection>
 
           <CatalogSection
             title="Apoio mensal"
             subtitle="Sustento recorrente para presença, cuidado e continuidade."
           >
-            <CampaignGrid
-              campaigns={monthlyCampaigns}
-              supportedCampaigns={supportedCampaigns}
-            />
+            <CampaignGrid campaigns={monthlyCampaigns} />
           </CatalogSection>
 
           <CatalogSection title="Organizações">
@@ -305,13 +294,7 @@ function CatalogSection({
   );
 }
 
-function CampaignGrid({
-  campaigns,
-  supportedCampaigns,
-}: {
-  campaigns: Campaign[];
-  supportedCampaigns: string[];
-}) {
+function CampaignGrid({ campaigns }: { campaigns: Campaign[] }) {
   if (campaigns.length === 0) {
     return (
       <div className="rounded-lg border border-dashed bg-card p-6 text-sm text-muted-foreground">
@@ -326,16 +309,15 @@ function CampaignGrid({
         const organization = saltCatalog.organizations.find(
           (item) => item.id === campaign.organizationID,
         );
-        const hasSupport = supportedCampaigns.includes(campaign.id);
 
         return (
-          <Link
+          <a
             key={campaign.id}
             href={`/campanhas/${campaign.id}`}
             aria-label={`Ver detalhes de ${campaign.title}`}
-            className="group overflow-hidden rounded-[1.75rem] bg-card p-3 text-left shadow-[0_18px_48px_rgb(0_0_0/0.24)] transition hover:-translate-y-1 hover:shadow-[0_22px_58px_rgb(0_0_0/0.34)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60 sm:p-4"
+            className="group block rounded-[1.25rem] text-left transition hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
           >
-            <div className="aspect-[16/9] overflow-hidden rounded-[1.2rem] bg-muted">
+            <div className="aspect-[16/9] overflow-hidden rounded-[1.25rem] bg-muted">
               <Image
                 src={assetPath(campaign.cover)}
                 alt={campaign.cover.alternativeText}
@@ -345,47 +327,34 @@ function CampaignGrid({
                 className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.035]"
               />
             </div>
-            <div className="px-2 pb-2 pt-5 sm:px-3 sm:pb-3">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground sm:text-base">
-                <MapPin className="size-4 shrink-0" strokeWidth={1.8} aria-hidden="true" />
-                <span>{campaign.location}</span>
-              </div>
-              <h3 className="mt-4 text-2xl font-semibold leading-tight tracking-tight">
+            <div className="pt-5">
+              <h3 className="text-2xl font-semibold leading-tight tracking-tight">
                 {campaign.title}
               </h3>
-              <p className="mt-3 line-clamp-2 text-base leading-7 text-muted-foreground">
-                {campaign.shortDescription}
+              <p className="mt-3 text-base text-muted-foreground">
+                {fundingProgress(campaign.funding)}% da meta alcançada
               </p>
               <Progress
                 value={fundingProgress(campaign.funding)}
-                className="mt-5 [&_[data-slot=progress-track]]:h-1.5 [&_[data-slot=progress-track]]:bg-white/15"
+                aria-label={`${fundingProgress(campaign.funding)}% da meta alcançada`}
+                className="mt-3 [&_[data-slot=progress-track]]:h-1.5 [&_[data-slot=progress-track]]:bg-white/15"
               />
-              <p className="mt-3 text-base font-semibold leading-6">
-                {campaign.funding.type === 'monthly'
-                  ? `${formatMoney(campaign.funding.committed)} de ${formatMoney(campaign.funding.goal)} por mês`
-                  : `${formatMoney(campaign.funding.raised)} de ${formatMoney(campaign.funding.goal)}`}
-              </p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {campaign.funding.type === 'monthly'
-                  ? `${campaign.funding.supportersCount} mantenedores`
-                  : `${fundingProgress(campaign.funding)}% da meta alcançada`}
-              </p>
-              <div className="mt-5 flex items-center gap-2 text-sm font-medium text-primary sm:text-base">
-                <BadgeCheck className="size-5 shrink-0" aria-hidden="true" />
-                <span>
-                  {organization?.verification === 'verifiedDemo'
-                    ? 'Organização verificada'
-                    : 'Informações fornecidas'}
+              <div className="mt-4 flex min-w-0 items-center gap-2 text-sm text-muted-foreground sm:text-base">
+                {organization?.verification === 'verifiedDemo' ? (
+                  <>
+                    <BadgeCheck
+                      className="size-5 shrink-0 text-primary"
+                      aria-hidden="true"
+                    />
+                    <span className="sr-only">Organização verificada:</span>
+                  </>
+                ) : null}
+                <span className="truncate">
+                  {organization?.name ?? 'Organização parceira'}
                 </span>
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {organization?.name ?? 'Organização parceira'}
-              </p>
-              {hasSupport ? (
-                <p className="mt-4 text-sm font-medium text-primary">Apoio ativo</p>
-              ) : null}
             </div>
-          </Link>
+          </a>
         );
       })}
     </div>

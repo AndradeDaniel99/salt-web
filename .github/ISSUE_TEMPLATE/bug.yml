@@ -1,0 +1,62 @@
+name: Bug
+description: Relate um comportamento incorreto ou uma regressão reproduzível.
+title: '[Bug]: '
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado pelo relato. Não inclua dados pessoais, credenciais ou detalhes de vulnerabilidades de segurança.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição
+      description: O que aconteceu?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Como reproduzir
+      description: Liste os menores passos necessários para observar o problema.
+      placeholder: |
+        1. Acesse...
+        2. Selecione...
+        3. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento esperado
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Ambiente
+      description: Sistema, navegador e versão relevantes.
+      placeholder: macOS 15, Safari 19
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto adicional
+      description: Capturas de tela ou logs sem informações sensíveis.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Verificações
+      options:
+        - label: Procurei issues existentes sobre o mesmo problema.
+          required: true
+        - label: Este relato não contém dados pessoais, segredos ou uma vulnerabilidade de segurança.
+          required: true

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
-import { CampaignDetailScreen } from '@/components/campaign-detail-screen';
+import { CampaignUpdatesScreen } from '@/components/campaign-updates-screen';
 import { saltCatalog } from '@/lib/catalog';
 
-type CampaignPageProps = {
+type CampaignUpdatesPageProps = {
   params: Promise<{ id: string }>;
 };
 
@@ -11,19 +11,21 @@ export function generateStaticParams() {
   return saltCatalog.campaigns.map((campaign) => ({ id: campaign.id }));
 }
 
-export async function generateMetadata({ params }: CampaignPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: CampaignUpdatesPageProps): Promise<Metadata> {
   const { id } = await params;
   const campaign = saltCatalog.campaigns.find((item) => item.id === id);
 
   return campaign
     ? {
-        title: `${campaign.title} | Salt`,
-        description: campaign.shortDescription,
+        title: `Atualizações de ${campaign.title} | Salt`,
+        description: `Acompanhe os relatos e resultados de ${campaign.title}.`,
       }
-    : { title: 'Campanha não encontrada | Salt' };
+    : { title: 'Atualizações não encontradas | Salt' };
 }
 
-export default async function CampaignPage({ params }: CampaignPageProps) {
+export default async function CampaignUpdatesPage({ params }: CampaignUpdatesPageProps) {
   const { id } = await params;
   const campaign = saltCatalog.campaigns.find((item) => item.id === id);
 
@@ -31,7 +33,7 @@ export default async function CampaignPage({ params }: CampaignPageProps) {
     return (
       <main className="grid min-h-screen place-items-center bg-background px-4 text-foreground">
         <div className="max-w-md rounded-lg border bg-card p-7 text-center shadow-sm">
-          <h1 className="text-2xl font-semibold">Campanha não encontrada</h1>
+          <h1 className="text-2xl font-semibold">Atualizações não encontradas</h1>
           <p className="mt-3 leading-7 text-muted-foreground">
             Esta campanha não está disponível no catálogo de demonstração.
           </p>
@@ -55,7 +57,7 @@ export default async function CampaignPage({ params }: CampaignPageProps) {
   const updates = saltCatalog.updates.filter((item) => item.campaignID === campaign.id);
 
   return (
-    <CampaignDetailScreen
+    <CampaignUpdatesScreen
       campaign={campaign}
       organization={organization}
       missionary={missionary}

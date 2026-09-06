@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import {
+  ArrowRight,
   CheckCircle2,
   Heart,
   MapPin,
@@ -61,14 +61,14 @@ export function CampaignDetailScreen({
       <header className="sticky top-0 z-20 border-b bg-background/94 backdrop-blur-md">
         <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-4 sm:px-6 lg:px-10">
           <AppBackButton fallbackHref="/" label="Voltar" />
-          <Link href="/" className="flex items-center gap-2" aria-label="Salt Web">
+          <a href="/" className="flex items-center gap-2" aria-label="Salt Web">
             <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground shadow-sm">
               <Sparkles className="size-4" aria-hidden="true" />
             </span>
             <span className="hidden text-sm font-semibold uppercase tracking-[0.16em] text-primary sm:block">
               Salt
             </span>
-          </Link>
+          </a>
         </div>
       </header>
 
@@ -135,7 +135,7 @@ export function CampaignDetailScreen({
                 : '.'}
             </p>
 
-            <Link
+            <a
               href={`/campanhas/${campaign.id}/apoio`}
               className={cn(
                 buttonVariants({ size: 'lg' }),
@@ -144,7 +144,7 @@ export function CampaignDetailScreen({
             >
               <Heart className="size-4 fill-current" aria-hidden="true" />
               {campaign.funding.type === 'monthly' ? 'Apoiar mensalmente' : 'Apoiar campanha'}
-            </Link>
+            </a>
             {hasActiveSupport ? (
               <p className="mt-4 flex items-start gap-2 text-sm font-medium text-primary">
                 <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
@@ -168,7 +168,7 @@ export function CampaignDetailScreen({
             </section>
 
             {missionary ? (
-              <Link
+              <a
                 href={`/missionarios/${missionary.id}`}
                 aria-label={`Ver perfil de ${missionary.displayName}`}
                 className="group block rounded-3xl border bg-card p-5 shadow-sm transition hover:border-primary/45 hover:bg-muted/55 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
@@ -194,7 +194,7 @@ export function CampaignDetailScreen({
                 <p className="mt-4 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
                   {missionary.currentMission}
                 </p>
-              </Link>
+              </a>
             ) : null}
 
             {organization ? (
@@ -223,10 +223,23 @@ export function CampaignDetailScreen({
             ) : null}
 
             <section>
-              <h2 className="text-2xl font-semibold tracking-tight">Atualizações</h2>
+              <div className="flex items-center justify-between gap-4">
+                <h2 className="text-2xl font-semibold tracking-tight">Atualizações</h2>
+                <a
+                  href={`/campanhas/${campaign.id}/atualizacoes`}
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition hover:text-primary/80"
+                >
+                  Ver todas
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </a>
+              </div>
               <div className="mt-4 space-y-3">
                 {updates.map((update) => (
-                  <article key={update.id} className="rounded-lg border bg-card p-5 shadow-sm">
+                  <a
+                    key={update.id}
+                    href={`/campanhas/${campaign.id}/atualizacoes#${update.id}`}
+                    className="group block rounded-lg border bg-card p-5 shadow-sm transition hover:border-primary/45 hover:bg-muted/55 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
+                  >
                     <p className="text-xs font-medium text-muted-foreground">
                       {new Intl.DateTimeFormat('pt-BR', {
                         day: '2-digit',
@@ -238,7 +251,14 @@ export function CampaignDetailScreen({
                     <p className="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
                       {update.body}
                     </p>
-                  </article>
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+                      Ler atualização
+                      <ArrowRight
+                        className="size-4 transition group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </a>
                 ))}
               </div>
             </section>

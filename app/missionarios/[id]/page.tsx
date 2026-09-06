@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 import { MissionaryDetailScreen } from '@/components/missionary-detail-screen';
 import { saltCatalog } from '@/lib/catalog';
@@ -31,9 +30,9 @@ export default async function MissionaryPage({ params }: MissionaryPageProps) {
       <main className="grid min-h-screen place-items-center bg-background px-4 text-foreground">
         <div className="max-w-md rounded-3xl bg-card p-7 text-center">
           <h1 className="text-2xl font-semibold">Missão não encontrada</h1>
-          <Link className="mt-6 inline-block text-primary" href="/">
+          <a className="mt-6 inline-block text-primary" href="/">
             Voltar ao catálogo
-          </Link>
+          </a>
         </div>
       </main>
     );
