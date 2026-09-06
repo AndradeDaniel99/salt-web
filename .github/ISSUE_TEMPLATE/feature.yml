@@ -1,0 +1,42 @@
+name: Proposta
+description: Proponha uma melhoria de produto, documentação ou arquitetura.
+title: '[Proposal]: '
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema
+      description: Que necessidade concreta esta proposta resolve e para quem?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposta
+      description: Descreva a menor mudança capaz de resolver o problema.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Impacto e escopo
+      description: Rotas, dados, acessibilidade, segurança ou documentação afetados.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Verificações
+      options:
+        - label: Procurei propostas existentes sobre o mesmo tema.
+          required: true
+        - label: A proposta preserva o caráter fictício e não financeiro do MVP atual.
+          required: true

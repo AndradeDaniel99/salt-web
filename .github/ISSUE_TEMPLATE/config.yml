@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Relatar vulnerabilidade
+    url: https://github.com/AndradeDaniel99/salt-web/security/advisories/new
+    about: Envie vulnerabilidades de forma privada. Não abra uma issue pública.
