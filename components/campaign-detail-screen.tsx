@@ -60,7 +60,7 @@ export function CampaignDetailScreen({
     <main className="min-h-screen bg-background pb-8 text-foreground">
       <header className="sticky top-0 z-20 border-b bg-background/94 backdrop-blur-md">
         <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-4 sm:px-6 lg:px-10">
-          <AppBackButton fallbackHref="/" label="Voltar" />
+          <AppBackButton fallbackHref="/" label="Back" />
           <a href="/" className="flex items-center gap-2" aria-label="Salt Web">
             <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground shadow-sm">
               <Sparkles className="size-4" aria-hidden="true" />
@@ -100,10 +100,10 @@ export function CampaignDetailScreen({
         <section className="py-6 sm:py-8">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <Badge variant={campaign.funding.type === 'monthly' ? 'secondary' : 'outline'}>
-              {campaign.funding.type === 'monthly' ? 'Apoio mensal' : 'Campanha pontual'}
+              {campaign.funding.type === 'monthly' ? 'Monthly support' : 'One-time campaign'}
             </Badge>
             <Badge className="border-primary/15 bg-primary/10 text-primary">
-              Demonstração
+              Demo
             </Badge>
           </div>
           <h1 className="max-w-3xl text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
@@ -124,14 +124,14 @@ export function CampaignDetailScreen({
                 <p className="mt-1 text-3xl font-semibold">{progress}%</p>
               </div>
               <Badge variant="secondary">
-                {campaign.funding.type === 'monthly' ? 'Recorrente' : 'Meta'}
+                {campaign.funding.type === 'monthly' ? 'Recurring' : 'Goal'}
               </Badge>
             </div>
             <Progress value={progress} className="[&_[data-slot=progress-track]]:h-2" />
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
               {fundingGoalLabel(campaign.funding)}
               {campaign.funding.type === 'monthly'
-                ? ` com ${campaign.funding.supportersCount} apoiadores.`
+                ? ` from ${campaign.funding.supportersCount} supporters.`
                 : '.'}
             </p>
 
@@ -143,16 +143,16 @@ export function CampaignDetailScreen({
               )}
             >
               <Heart className="size-4 fill-current" aria-hidden="true" />
-              {campaign.funding.type === 'monthly' ? 'Apoiar mensalmente' : 'Apoiar campanha'}
+              {campaign.funding.type === 'monthly' ? 'Support monthly' : 'Support campaign'}
             </a>
             {hasActiveSupport ? (
               <p className="mt-4 flex items-start gap-2 text-sm font-medium text-primary">
                 <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                Você já apoia esta campanha neste dispositivo.
+                You already support this campaign on this device.
               </p>
             ) : (
               <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                Simulação sem cobrança ou envio de dados pessoais.
+                Demo only. No charges or personal data collection.
               </p>
             )}
           </aside>
@@ -160,7 +160,7 @@ export function CampaignDetailScreen({
           <div className="space-y-7 lg:col-start-1 lg:row-start-1">
             <section>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-                Sobre a campanha
+                About this campaign
               </p>
               <p className="mt-3 text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
                 {campaign.story}
@@ -170,7 +170,7 @@ export function CampaignDetailScreen({
             {missionary ? (
               <a
                 href={`/missionarios/${missionary.id}`}
-                aria-label={`Ver perfil de ${missionary.displayName}`}
+                aria-label={`View ${missionary.displayName}'s profile`}
                 className="group block rounded-3xl border bg-card p-5 shadow-sm transition hover:border-primary/45 hover:bg-muted/55 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
               >
                 <div className="flex items-center gap-4">
@@ -183,7 +183,7 @@ export function CampaignDetailScreen({
                   />
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                      Em campo · Ver perfil
+                      In the field · View profile
                     </p>
                     <h2 className="mt-1 text-xl font-semibold">{missionary.displayName}</h2>
                     <p className="text-sm text-muted-foreground">
@@ -211,8 +211,8 @@ export function CampaignDetailScreen({
                     <h2 className="font-semibold">{organization.name}</h2>
                     <p className="text-sm text-muted-foreground">
                       {organization.verification === 'verifiedDemo'
-                        ? 'Verificada para demonstração'
-                        : 'Informações fornecidas'}
+                        ? 'Verified for this demo'
+                        : 'Information provided'}
                     </p>
                   </div>
                 </div>
@@ -224,12 +224,12 @@ export function CampaignDetailScreen({
 
             <section>
               <div className="flex items-center justify-between gap-4">
-                <h2 className="text-2xl font-semibold tracking-tight">Atualizações</h2>
+                <h2 className="text-2xl font-semibold tracking-tight">Updates</h2>
                 <a
                   href={`/campanhas/${campaign.id}/atualizacoes`}
                   className="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition hover:text-primary/80"
                 >
-                  Ver todas
+                  View all
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </a>
               </div>
@@ -241,8 +241,8 @@ export function CampaignDetailScreen({
                     className="group block rounded-lg border bg-card p-5 shadow-sm transition hover:border-primary/45 hover:bg-muted/55 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
                   >
                     <p className="text-xs font-medium text-muted-foreground">
-                      {new Intl.DateTimeFormat('pt-BR', {
-                        day: '2-digit',
+                      {new Intl.DateTimeFormat('en-US', {
+                        day: 'numeric',
                         month: 'long',
                         year: 'numeric',
                       }).format(new Date(update.publishedAt))}
@@ -252,7 +252,7 @@ export function CampaignDetailScreen({
                       {update.body}
                     </p>
                     <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
-                      Ler atualização
+                      Read update
                       <ArrowRight
                         className="size-4 transition group-hover:translate-x-0.5"
                         aria-hidden="true"

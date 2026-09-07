@@ -74,7 +74,7 @@ describe('demo catalog', () => {
 describe('catalog presentation helpers', () => {
   it('formats BRL values stored in minor units', () => {
     expect(formatMoney({ minorUnits: 735_000, currency: 'BRL' })).toContain(
-      '7.350',
+      '7,350',
     );
   });
 
@@ -92,7 +92,7 @@ describe('catalog presentation helpers', () => {
   it('provides safe fallback details for an unknown update', () => {
     const details = getUpdatePostDetails('unknown-update');
 
-    expect(details.category).toBe('Atualização de campo');
+    expect(details.category).toBe('Field update');
     expect(details.reactions).toBe(0);
     expect(details.comments).toBe(0);
   });

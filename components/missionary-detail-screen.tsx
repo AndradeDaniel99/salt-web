@@ -18,7 +18,7 @@ export function MissionaryDetailScreen({
       <div className="mx-auto w-full max-w-[960px] px-4 pt-5 sm:px-8 sm:pt-8">
         <AppBackButton
           fallbackHref={campaigns[0] ? `/campanhas/${campaigns[0].id}` : '/'}
-          label="Voltar"
+          label="Back"
           iconOnly
         />
 
@@ -42,13 +42,13 @@ export function MissionaryDetailScreen({
             {missionary.location}, {missionary.country}
           </p>
           <p className="mt-2 text-base text-muted-foreground">
-            Em campo desde {missionary.sentYear}
+            Serving in the field since {missionary.sentYear}
           </p>
         </section>
 
         {organization ? (
           <section>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Enviados por</h2>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Sent by</h2>
             <article className="mt-5 rounded-[1.75rem] bg-card p-4 sm:p-6">
               <div className="grid h-36 place-items-center overflow-hidden rounded-[1.25rem] bg-[#e7f2ed] p-6">
                 <Image
@@ -63,8 +63,8 @@ export function MissionaryDetailScreen({
               <p className="mt-4 flex items-center gap-2 font-medium text-primary">
                 <BadgeCheck className="size-5" aria-hidden="true" />
                 {organization.verification === 'verifiedDemo'
-                  ? 'Organização verificada'
-                  : 'Informações fornecidas'}
+                  ? 'Verified organization'
+                  : 'Information provided'}
               </p>
               <p className="mt-4 flex items-center gap-2 text-muted-foreground">
                 <MapPin className="size-5" aria-hidden="true" />
@@ -75,14 +75,14 @@ export function MissionaryDetailScreen({
         ) : null}
 
         <section className="mt-10">
-          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Nossa história</h2>
+          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Our story</h2>
           <p className="mt-4 text-base leading-8 text-muted-foreground sm:text-lg">
             {missionary.story}
           </p>
         </section>
 
         <section className="mt-10 rounded-[1.75rem] bg-card p-6">
-          <h2 className="text-2xl font-semibold tracking-tight">Missão atual</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">Current mission</h2>
           <p className="mt-4 text-base leading-7 text-muted-foreground">
             {missionary.currentMission}
           </p>
@@ -91,7 +91,7 @@ export function MissionaryDetailScreen({
         {campaigns.length > 0 ? (
           <section className="mt-10">
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Campanhas ativas
+              Active campaigns
             </h2>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {campaigns.map((campaign) => (

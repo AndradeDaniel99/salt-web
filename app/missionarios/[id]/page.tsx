@@ -16,8 +16,8 @@ export async function generateMetadata({ params }: MissionaryPageProps): Promise
   const missionary = saltCatalog.missionaries.find((item) => item.id === id);
 
   return {
-    title: missionary ? `${missionary.displayName} | Salt` : 'Missão não encontrada | Salt',
-    description: missionary?.shortBio ?? 'Missão não encontrada.',
+    title: missionary ? `${missionary.displayName} | Salt` : 'Mission not found | Salt',
+    description: missionary?.shortBio ?? 'Mission not found.',
   };
 }
 
@@ -29,9 +29,9 @@ export default async function MissionaryPage({ params }: MissionaryPageProps) {
     return (
       <main className="grid min-h-screen place-items-center bg-background px-4 text-foreground">
         <div className="max-w-md rounded-3xl bg-card p-7 text-center">
-          <h1 className="text-2xl font-semibold">Missão não encontrada</h1>
+          <h1 className="text-2xl font-semibold">Mission not found</h1>
           <a className="mt-6 inline-block text-primary" href="/">
-            Voltar ao catálogo
+            Back to catalog
           </a>
         </div>
       </main>

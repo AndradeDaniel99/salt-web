@@ -43,7 +43,7 @@ declare global {
 export function SaltApp() {
   const [query, setQuery] = useState('');
   const searchResults = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase('pt-BR');
+    const normalized = query.trim().toLocaleLowerCase('en');
 
     if (!normalized) {
       return {
@@ -70,13 +70,13 @@ export function SaltApp() {
         ]
           .filter(Boolean)
           .join(' ')
-          .toLocaleLowerCase('pt-BR')
+          .toLocaleLowerCase('en')
           .includes(normalized);
       }),
       organizations: saltCatalog.organizations.filter((organization) =>
         [organization.name, organization.summary, organization.location]
           .join(' ')
-          .toLocaleLowerCase('pt-BR')
+          .toLocaleLowerCase('en')
           .includes(normalized),
       ),
     };
@@ -218,8 +218,8 @@ export function SaltApp() {
                   Salt
                 </span>
               </a>
-              <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Descobrir</h1>
-              <span className="w-[85px] text-right text-xs text-muted-foreground">Demonstração</span>
+              <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Discover</h1>
+              <span className="w-[85px] text-right text-xs text-muted-foreground">Demo</span>
             </div>
             <div className="relative mt-6 w-full">
               <Search
@@ -230,15 +230,15 @@ export function SaltApp() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 className="h-14 rounded-2xl border-white/10 bg-card pl-12 pr-11 text-base shadow-none placeholder:text-muted-foreground/80 focus-visible:border-primary/60"
-                placeholder="Campanhas, pessoas ou organizações"
-                aria-label="Buscar no catálogo"
+                placeholder="Campaigns, people, or organizations"
+                aria-label="Search the catalog"
               />
               {query ? (
                 <button
                   type="button"
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition hover:text-foreground"
                   onClick={() => setQuery('')}
-                  aria-label="Limpar busca"
+                  aria-label="Clear search"
                 >
                   <X className="size-4" aria-hidden="true" />
                 </button>
@@ -247,20 +247,20 @@ export function SaltApp() {
           </header>
 
           <CatalogSection
-            title="Campanhas pontuais"
-            subtitle="Metas com prazo, prestação de contas e atualizações de campo."
+            title="One-time campaigns"
+            subtitle="Time-bound goals with transparent reporting and field updates."
           >
             <CampaignGrid campaigns={featuredOneTime} />
           </CatalogSection>
 
           <CatalogSection
-            title="Apoio mensal"
-            subtitle="Sustento recorrente para presença, cuidado e continuidade."
+            title="Monthly support"
+            subtitle="Ongoing support for long-term presence, care, and continuity."
           >
             <CampaignGrid campaigns={monthlyCampaigns} />
           </CatalogSection>
 
-          <CatalogSection title="Organizações">
+          <CatalogSection title="Organizations">
             <div className="grid gap-3 md:grid-cols-3">
               {searchResults.organizations.map((organization) => (
                 <OrganizationCard key={organization.id} organization={organization} />
@@ -298,7 +298,7 @@ function CampaignGrid({ campaigns }: { campaigns: Campaign[] }) {
   if (campaigns.length === 0) {
     return (
       <div className="rounded-lg border border-dashed bg-card p-6 text-sm text-muted-foreground">
-        Nenhum resultado encontrado para esta busca.
+        No results found for this search.
       </div>
     );
   }
@@ -314,7 +314,7 @@ function CampaignGrid({ campaigns }: { campaigns: Campaign[] }) {
           <a
             key={campaign.id}
             href={`/campanhas/${campaign.id}`}
-            aria-label={`Ver detalhes de ${campaign.title}`}
+            aria-label={`View details for ${campaign.title}`}
             className="group block rounded-[1.25rem] text-left transition hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
           >
             <div className="aspect-[16/9] overflow-hidden rounded-[1.25rem] bg-muted">
@@ -332,11 +332,11 @@ function CampaignGrid({ campaigns }: { campaigns: Campaign[] }) {
                 {campaign.title}
               </h3>
               <p className="mt-3 text-base text-muted-foreground">
-                {fundingProgress(campaign.funding)}% da meta alcançada
+                {fundingProgress(campaign.funding)}% of goal reached
               </p>
               <Progress
                 value={fundingProgress(campaign.funding)}
-                aria-label={`${fundingProgress(campaign.funding)}% da meta alcançada`}
+                aria-label={`${fundingProgress(campaign.funding)}% of goal reached`}
                 className="mt-3 [&_[data-slot=progress-track]]:h-1.5 [&_[data-slot=progress-track]]:bg-white/15"
               />
               <div className="mt-4 flex min-w-0 items-center gap-2 text-sm text-muted-foreground sm:text-base">
@@ -346,11 +346,11 @@ function CampaignGrid({ campaigns }: { campaigns: Campaign[] }) {
                       className="size-5 shrink-0 text-primary"
                       aria-hidden="true"
                     />
-                    <span className="sr-only">Organização verificada:</span>
+                    <span className="sr-only">Verified organization:</span>
                   </>
                 ) : null}
                 <span className="truncate">
-                  {organization?.name ?? 'Organização parceira'}
+                  {organization?.name ?? 'Partner organization'}
                 </span>
               </div>
             </div>

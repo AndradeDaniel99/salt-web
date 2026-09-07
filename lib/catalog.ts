@@ -89,7 +89,7 @@ export function assetPath(media: MediaReference) {
 }
 
 export function formatMoney(money: Money) {
-  return new Intl.NumberFormat('pt-BR', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: money.currency,
     maximumFractionDigits: 0,
@@ -104,16 +104,16 @@ export function fundingProgress(funding: Funding) {
 
 export function fundingCurrentLabel(funding: Funding) {
   if (funding.type === 'oneTime') {
-    return `${formatMoney(funding.raised)} arrecadados`;
+    return `${formatMoney(funding.raised)} raised`;
   }
 
-  return `${formatMoney(funding.committed)} mensais comprometidos`;
+  return `${formatMoney(funding.committed)} committed monthly`;
 }
 
 export function fundingGoalLabel(funding: Funding) {
   if (funding.type === 'oneTime') {
-    return `Meta de ${formatMoney(funding.goal)}`;
+    return `Goal: ${formatMoney(funding.goal)}`;
   }
 
-  return `Meta mensal de ${formatMoney(funding.goal)}`;
+  return `Monthly goal: ${formatMoney(funding.goal)}`;
 }

@@ -20,7 +20,7 @@ const minimumAmount = 10;
 const maximumAmount = 5000;
 
 function formatContribution(amount: number) {
-  return new Intl.NumberFormat('pt-BR', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'BRL',
     minimumFractionDigits: 2,
@@ -32,8 +32,8 @@ function SimulationNotice() {
     <div className="flex gap-3 rounded-3xl border border-primary/10 bg-primary/16 p-5 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
       <Info className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
       <p>
-        Esta experiência é uma simulação. Nenhum dinheiro será movimentado e nenhuma
-        cobrança será realizada.
+        This is a demo experience. No money will be transferred and no charges will be
+        made.
       </p>
     </div>
   );
@@ -73,7 +73,7 @@ export function SupportFlow({
   const [amount, setAmount] = useState(100);
   const [customAmount, setCustomAmount] = useState('100');
   const isValidAmount = amount >= minimumAmount && amount <= maximumAmount;
-  const frequency = campaign.funding.type === 'monthly' ? 'Mensal' : 'Uma vez';
+  const frequency = campaign.funding.type === 'monthly' ? 'Monthly' : 'One time';
   const missionHref = campaign.missionaryID
     ? `/missionarios/${campaign.missionaryID}`
     : `/campanhas/${campaign.id}`;
@@ -122,15 +122,15 @@ export function SupportFlow({
         {step < 3 ? (
           <header className="grid grid-cols-[48px_1fr_48px] items-center gap-3">
             {step === 2 ? (
-              <HeaderControl label="Voltar para escolher o valor" onClick={() => setStep(1)}>
+              <HeaderControl label="Back to amount selection" onClick={() => setStep(1)}>
                 <ArrowLeft className="size-5" aria-hidden="true" />
               </HeaderControl>
             ) : (
               <span aria-hidden="true" />
             )}
-            <p className="text-center text-sm font-semibold text-muted-foreground">Seu apoio</p>
+            <p className="text-center text-sm font-semibold text-muted-foreground">Your support</p>
             <HeaderControl
-              label="Fechar fluxo de apoio"
+              label="Close support flow"
               onClick={closeSupportFlow}
             >
               <X className="size-5" aria-hidden="true" />
@@ -142,7 +142,7 @@ export function SupportFlow({
           <section className="flex flex-1 flex-col pt-12 sm:pt-16">
             <div>
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                Escolha sua contribuição
+                Choose your contribution
               </h1>
               <p className="mt-2 text-lg text-muted-foreground">{campaign.title}</p>
             </div>
@@ -152,7 +152,7 @@ export function SupportFlow({
             </div>
 
             <div className="mt-6 rounded-[1.75rem] bg-card p-5 sm:p-7">
-              <h2 className="text-xl font-semibold">Valores sugeridos</h2>
+              <h2 className="text-xl font-semibold">Suggested amounts</h2>
               <div className="mt-5 grid grid-cols-2 gap-3">
                 {suggestedAmounts.map((suggestedAmount) => (
                   <Button
@@ -173,7 +173,7 @@ export function SupportFlow({
               </div>
 
               <label className="mt-7 block text-base font-medium" htmlFor="custom-amount">
-                Outro valor
+                Custom amount
               </label>
               <div className="relative mt-3">
                 <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
@@ -195,7 +195,7 @@ export function SupportFlow({
                   customAmount && !isValidAmount && 'text-destructive',
                 )}
               >
-                Entre {formatMoney({ minorUnits: minimumAmount * 100, currency: 'BRL' })} e{' '}
+                Enter an amount between {formatMoney({ minorUnits: minimumAmount * 100, currency: 'BRL' })} and{' '}
                 {formatMoney({ minorUnits: maximumAmount * 100, currency: 'BRL' })}.
               </p>
             </div>
@@ -211,7 +211,7 @@ export function SupportFlow({
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
               >
-                Continuar
+                Continue
                 <ArrowRight className="size-5" aria-hidden="true" />
               </Button>
             </div>
@@ -221,19 +221,19 @@ export function SupportFlow({
         {step === 2 ? (
           <section className="flex flex-1 flex-col pt-12 sm:pt-16">
             <div>
-              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Seu apoio</h1>
+              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Your support</h1>
               <p className="mt-2 text-lg text-muted-foreground">
-                Confira os dados desta simulação.
+                Review the details of this demo contribution.
               </p>
             </div>
 
             <dl className="mt-8 divide-y divide-white/10 rounded-[1.75rem] bg-card px-5 sm:px-7">
               {[
-                ['Campanha', campaign.title],
-                ['Organização', organization?.name ?? 'Organização parceira'],
-                ['Valor', formatContribution(amount)],
-                ['Frequência', frequency],
-                ['Pagamento', 'Cartão demonstrativo •••• 4242'],
+                ['Campaign', campaign.title],
+                ['Organization', organization?.name ?? 'Partner organization'],
+                ['Amount', formatContribution(amount)],
+                ['Frequency', frequency],
+                ['Payment', 'Demo card •••• 4242'],
               ].map(([label, value]) => (
                 <div
                   key={label}
@@ -249,8 +249,8 @@ export function SupportFlow({
               <SimulationNotice />
             </div>
             <p className="mt-5 text-sm leading-6 text-muted-foreground">
-              Nenhum dado de cartão é coletado ou armazenado. O número exibido é
-              inteiramente fictício.
+              No card data is collected or stored. The number shown is entirely
+              fictional.
             </p>
 
             <div className="mt-8 pb-[max(1rem,env(safe-area-inset-bottom))]">
@@ -261,7 +261,7 @@ export function SupportFlow({
                 onClick={confirmSupport}
               >
                 <Heart className="size-5 fill-current" aria-hidden="true" />
-                Confirmar apoio
+                Confirm support
               </Button>
             </div>
           </section>
@@ -269,13 +269,13 @@ export function SupportFlow({
 
         {step === 3 ? (
           <section className="flex flex-1 flex-col items-center justify-center py-12 text-center">
-            <p className="text-sm font-semibold text-muted-foreground">Confirmação</p>
+            <p className="text-sm font-semibold text-muted-foreground">Confirmation</p>
             <div className="mt-12 grid size-20 place-items-center rounded-full bg-primary text-primary-foreground">
               <Heart className="size-9 fill-current" aria-hidden="true" />
             </div>
             <Check className="sr-only" aria-hidden="true" />
             <h1 className="mt-8 max-w-xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
-              Você agora faz parte dessa missão.
+              You are now part of this mission.
             </h1>
             <p className="mt-8 text-xl">{campaign.title}</p>
             <p className="mt-5 text-3xl font-semibold">{formatContribution(amount)}</p>
@@ -285,8 +285,8 @@ export function SupportFlow({
               <SimulationNotice />
             </div>
             <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">
-              O apoio foi salvo somente neste dispositivo para que você possa experimentar o
-              acompanhamento da missão.
+              Your support was saved only on this device so you can explore the mission
+              follow-up experience.
             </p>
 
             <a
@@ -296,7 +296,7 @@ export function SupportFlow({
                 'mt-9 h-14 w-full rounded-2xl bg-primary px-6 text-base text-primary-foreground hover:bg-primary/90',
               )}
             >
-              Acompanhar missão
+              Follow the mission
               <ArrowRight className="size-5" aria-hidden="true" />
             </a>
           </section>

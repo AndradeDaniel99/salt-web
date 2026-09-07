@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: CampaignPageProps): Promise<M
         title: `${campaign.title} | Salt`,
         description: campaign.shortDescription,
       }
-    : { title: 'Campanha não encontrada | Salt' };
+    : { title: 'Campaign not found | Salt' };
 }
 
 export default async function CampaignPage({ params }: CampaignPageProps) {
@@ -31,15 +31,15 @@ export default async function CampaignPage({ params }: CampaignPageProps) {
     return (
       <main className="grid min-h-screen place-items-center bg-background px-4 text-foreground">
         <div className="max-w-md rounded-lg border bg-card p-7 text-center shadow-sm">
-          <h1 className="text-2xl font-semibold">Campanha não encontrada</h1>
+          <h1 className="text-2xl font-semibold">Campaign not found</h1>
           <p className="mt-3 leading-7 text-muted-foreground">
-            Esta campanha não está disponível no catálogo de demonstração.
+            This campaign is not available in the demo catalog.
           </p>
           <a
             href="/"
             className="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           >
-            Voltar às campanhas
+            Back to campaigns
           </a>
         </div>
       </main>
