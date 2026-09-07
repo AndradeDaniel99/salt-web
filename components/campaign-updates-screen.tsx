@@ -55,14 +55,14 @@ export function CampaignUpdatesScreen({
         <div className="mx-auto grid h-16 w-full max-w-3xl grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-8">
           <AppBackButton
             fallbackHref={`/campanhas/${campaign.id}`}
-            label="Voltar"
+            label="Back"
             className="justify-self-start"
           />
-          <p className="text-sm font-semibold">Atualizações</p>
+          <p className="text-sm font-semibold">Updates</p>
           <a
             href="/"
             className="grid size-9 place-items-center justify-self-end rounded-lg bg-primary text-primary-foreground"
-            aria-label="Ir para a página inicial"
+            aria-label="Go to the home page"
           >
             <Sparkles className="size-4" aria-hidden="true" />
           </a>
@@ -73,14 +73,13 @@ export function CampaignUpdatesScreen({
         <section className="border-b border-white/10 pb-8">
           <div className="flex items-center gap-2 text-sm text-primary">
             <span className="size-2 rounded-full bg-primary" aria-hidden="true" />
-            Diário da missão
+            Mission journal
           </div>
           <h1 className="mt-4 text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
             {campaign.title}
           </h1>
           <p className="mt-3 text-base leading-7 text-muted-foreground sm:text-lg">
-            Acompanhe decisões, resultados e próximos passos compartilhados pela equipe em
-            campo.
+            Follow the decisions, results, and next steps shared by the field team.
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
@@ -90,11 +89,11 @@ export function CampaignUpdatesScreen({
             <span className="inline-flex items-center gap-2">
               <CalendarDays className="size-4 text-primary" aria-hidden="true" />
               {sortedUpdates.length}{' '}
-              {sortedUpdates.length === 1 ? 'publicação' : 'publicações'}
+              {sortedUpdates.length === 1 ? 'post' : 'posts'}
             </span>
           </div>
           <Badge className="mt-5 border-primary/15 bg-primary/10 text-primary">
-            Conteúdo demonstrativo
+            Demo content
           </Badge>
         </section>
 
@@ -102,8 +101,8 @@ export function CampaignUpdatesScreen({
           {sortedUpdates.map((update) => {
             const details = getUpdatePostDetails(update.id);
             const isLiked = likedUpdates.includes(update.id);
-            const publishedDate = new Intl.DateTimeFormat('pt-BR', {
-              day: '2-digit',
+            const publishedDate = new Intl.DateTimeFormat('en-US', {
+              day: 'numeric',
               month: 'long',
               year: 'numeric',
             }).format(new Date(update.publishedAt));
@@ -125,20 +124,20 @@ export function CampaignUpdatesScreen({
                     />
                   ) : (
                     <span className="grid size-12 shrink-0 place-items-center rounded-full bg-primary/12 text-sm font-semibold text-primary">
-                      {organization?.name.slice(0, 2).toLocaleUpperCase('pt-BR') ?? 'SL'}
+                      {organization?.name.slice(0, 2).toLocaleUpperCase('en') ?? 'SL'}
                     </span>
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
                       <p className="truncate text-sm font-semibold sm:text-base">
-                        {missionary?.displayName ?? organization?.name ?? 'Equipe de campo'}
+                        {missionary?.displayName ?? organization?.name ?? 'Field team'}
                       </p>
                       {organization?.verification === 'verifiedDemo' ? (
-                        <BadgeCheck className="size-4 shrink-0 text-primary" aria-label="Perfil verificado" />
+                        <BadgeCheck className="size-4 shrink-0 text-primary" aria-label="Verified profile" />
                       ) : null}
                     </div>
                     <p className="mt-0.5 text-sm text-muted-foreground">
-                      {organization?.name ?? 'Parceiro local'} · {publishedDate}, às{' '}
+                      {organization?.name ?? 'Local partner'} · {publishedDate} at{' '}
                       {details.publishedTime}
                     </p>
                   </div>
@@ -195,7 +194,7 @@ export function CampaignUpdatesScreen({
 
                 <div className="mt-5 rounded-2xl border border-primary/15 bg-primary/10 p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                    Próximo passo
+                    Next step
                   </p>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
                     {details.nextStep}
@@ -229,7 +228,7 @@ export function CampaignUpdatesScreen({
                   {organization?.verification === 'verifiedDemo' ? (
                     <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground sm:text-sm">
                       <BadgeCheck className="size-4 text-primary" aria-hidden="true" />
-                      Publicado pela missão
+                      Posted by the mission team
                     </span>
                   ) : null}
                 </div>

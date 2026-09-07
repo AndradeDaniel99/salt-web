@@ -4,7 +4,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Salt Web',
   description:
-    'Protótipo web para descobrir, apoiar e acompanhar campanhas missionárias fictícias.',
+    'A demo experience for discovering, supporting, and following fictional mission campaigns.',
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className="dark">
+    <html lang="en" className="dark">
       <body>{children}</body>
     </html>
   );
